@@ -1,0 +1,11 @@
+D:\Web2017\Web2017\PPT.Hex\bin\Debug\netcoreapp2.0\PPT.Hex.deps.json
+D:\Web2017\Web2017\PPT.Hex\bin\Debug\netcoreapp2.0\PPT.Hex.runtimeconfig.json
+D:\Web2017\Web2017\PPT.Hex\bin\Debug\netcoreapp2.0\PPT.Hex.runtimeconfig.dev.json
+D:\Web2017\Web2017\PPT.Hex\bin\Debug\netcoreapp2.0\PPT.Hex.dll
+D:\Web2017\Web2017\PPT.Hex\bin\Debug\netcoreapp2.0\PPT.Hex.pdb
+D:\Web2017\Web2017\PPT.Hex\obj\Debug\netcoreapp2.0\PPT.Hex.csprojResolveAssemblyReference.cache
+D:\Web2017\Web2017\PPT.Hex\obj\Debug\netcoreapp2.0\PPT.Hex.csproj.CoreCompileInputs.cache
+D:\Web2017\Web2017\PPT.Hex\obj\Debug\netcoreapp2.0\PPT.Hex.AssemblyInfoInputs.cache
+D:\Web2017\Web2017\PPT.Hex\obj\Debug\netcoreapp2.0\PPT.Hex.AssemblyInfo.cs
+D:\Web2017\Web2017\PPT.Hex\obj\Debug\netcoreapp2.0\PPT.Hex.dll
+D:\Web2017\Web2017\PPT.Hex\obj\Debug\netcoreapp2.0\PPT.Hex.pdb

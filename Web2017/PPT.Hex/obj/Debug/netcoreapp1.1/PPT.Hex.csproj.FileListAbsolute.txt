@@ -1,0 +1,3 @@
+D:\Web2017\Web2017\PPT.Hex\obj\Debug\netcoreapp1.1\PPT.Hex.csproj.CoreCompileInputs.cache
+D:\Web2017\Web2017\PPT.Hex\obj\Debug\netcoreapp1.1\PPT.Hex.AssemblyInfoInputs.cache
+D:\Web2017\Web2017\PPT.Hex\obj\Debug\netcoreapp1.1\PPT.Hex.AssemblyInfo.cs

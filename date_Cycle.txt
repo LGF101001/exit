@@ -1,0 +1,200 @@
+[AllowAnonymous]
+        public Tuple<DateTime, DateTime> CalcTimeCycle(ENUMTimeCycle timeCycle, DateTime t1)
+        {
+            // DateTime nowTime = DateTime.Now;
+            DateTime nowTime = t1;
+            DateTime startTime = nowTime;
+            DateTime endTime = nowTime;
+
+            int nowYear = nowTime.Year;
+            int nowMonth = nowTime.Month;
+            int nowDay = nowTime.Day;
+            DayOfWeek nowDayOfWeek = nowTime.DayOfWeek;
+            //开始时间点
+            DateTime tmpstartTime = new DateTime(nowYear, nowMonth, nowDay);
+            //最后时间点
+            DateTime tmpEndTime = new DateTime(nowYear, nowMonth, nowDay, 23, 59, 59, 999);
+
+            switch (timeCycle)
+            {
+                case ENUMTimeCycle.本周:
+                    switch (nowDayOfWeek)
+                    {
+                        case DayOfWeek.Sunday:
+                            startTime = tmpstartTime.AddDays(-6);
+                            endTime = tmpEndTime;
+                            break;
+                        case DayOfWeek.Monday:
+                            startTime = tmpstartTime;
+                            endTime = tmpEndTime.AddDays(6);
+                            break;
+                        case DayOfWeek.Tuesday:
+                            startTime = tmpstartTime.AddDays(-1);
+                            endTime = tmpEndTime.AddDays(5);
+                            break;
+                        case DayOfWeek.Wednesday:
+                            startTime = tmpstartTime.AddDays(-2);
+                            endTime = tmpEndTime.AddDays(4);
+                            break;
+                        case DayOfWeek.Thursday:
+                            startTime = tmpstartTime.AddDays(-3);
+                            endTime = tmpEndTime.AddDays(3);
+                            break;
+                        case DayOfWeek.Friday:
+                            startTime = tmpstartTime.AddDays(-4);
+                            endTime = tmpEndTime.AddDays(2);
+                            break;
+                        case DayOfWeek.Saturday:
+                            startTime = tmpstartTime.AddDays(-5);
+                            endTime = tmpEndTime.AddDays(1);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    break;
+                case ENUMTimeCycle.本月:
+                    startTime = new DateTime(nowYear, nowMonth, 1);
+                    endTime = new DateTime(nowYear, nowMonth, 1, 23, 59, 59, 999).AddMonths(1).AddDays(-1);
+
+                    break;
+                case ENUMTimeCycle.上月:
+                    startTime = new DateTime(nowYear, nowMonth, 1).AddMonths(-1);
+                    endTime = new DateTime(nowYear, nowMonth, 1, 23, 59, 59, 999).AddDays(-1);
+
+                    break;
+                case ENUMTimeCycle.本年度:
+                    startTime = new DateTime(nowYear, 1, 1);
+                    endTime = new DateTime(nowYear, 12, 31, 23, 59, 59, 999);
+
+                    break;
+                case ENUMTimeCycle.近3个月:
+                    startTime = new DateTime(nowYear, nowMonth, 1).AddMonths(-2);
+                    endTime = new DateTime(nowYear, nowMonth, 1, 23, 59, 59, 999).AddMonths(1).AddDays(-1);
+
+                    break;
+                case ENUMTimeCycle.近6个月:
+                    startTime = new DateTime(nowYear, nowMonth, 1).AddMonths(-5);
+                    endTime = new DateTime(nowYear, nowMonth, 1, 23, 59, 59, 999).AddMonths(1).AddDays(-1);
+
+                    break;
+                case ENUMTimeCycle.更早时间:
+
+                    break;
+                default:
+                    break;
+            }
+            return Tuple.Create(startTime, endTime);
+        }
+
+    }
+
+    /// <summary>
+    ///时间周期
+    /// </summary>
+    public enum ENUMTimeCycle
+    {
+        本周 = 1,
+        本月 = 2,
+        上月 = 3,
+        本年度 = 4,
+        近3个月 = 5,
+        近6个月 = 6,
+        更早时间 = 7
+    }
+}
+
+function CalcTimeCycle(dt, timeCycle) {
+
+    var nowTime = new Date(dt),
+       startTime,
+       endTime,
+       nowYear = nowTime.getFullYear(),
+       nowMonth = nowTime.getMonth() + 1,
+       nowDate = nowTime.getDate(),
+       nowDayOfWeek = nowTime.getDay(),//一周中的某一天 (0 ~ 6)
+       //开始时间点
+       tmpstartTime = new Date(nowYear + '-' + nowMonth + '-' + nowDate + ' 00:00:00'),
+       //最后时间点
+       tmpEndTime = new Date(nowYear + '-' + nowMonth + '-' + nowDate + ' 23:59:59');
+
+    switch (parseInt(timeCycle)) {
+        case 1: //本周
+            switch (nowDayOfWeek) {
+                case 0://星期日
+                    startTime = '';
+                    endTime = '';
+                    break;
+                case 1://星期一
+                    startTime = '';
+                    endTime = '';
+                    break;
+                case 2://星期二
+                    startTime = '';
+                    endTime = '';
+                    break;
+                case 3://星期三
+                    startTime = '';
+                    endTime = '';
+                    break;
+                case 4://星期四
+                    startTime = '';
+                    endTime = '';
+                    break;
+                case 5://星期五
+                    startTime = '';
+                    endTime = '';
+                    break;
+                case 6://星期六
+                    startTime = '';
+                    endTime = '';
+                    break;
+            }
+
+            break;
+        case 2://本月
+            startTime = new Date(nowYear + '-' + nowMonth + '-' + 1 + ' 00:00:00');
+            endTime = new Date(new Date(nowYear + '-' + nowMonth + '-' + 1 + ' 23:59:59').setMonth(nowMonth)).setDate(-1);
+
+            break;
+        case 3://上月
+
+            break;
+        case 4://本年度
+
+            break;
+        case 5://近3个月
+
+            break;
+        case 6://近6个月
+
+            break;
+        case 7://更早时间
+
+            break;
+        default:
+
+    }
+
+    startTime = new Date(startTime);
+    endTime = new Date(endTime);
+
+    console.log(startTime
+        + '----' + startTime.getFullYear()
+        + '/' + (startTime.getMonth() + 1)
+        + '/' + startTime.getDate()
+        + ' ' + startTime.getHours()
+        + ':' + startTime.getMinutes()
+        + ':' + startTime.getSeconds());
+
+    console.log(endTime
+        + '----' + endTime.getFullYear()
+        + '/' + (endTime.getMonth() + 1)
+        + '/' + endTime.getDate()
+        + ' ' + endTime.getHours()
+        + ':' + endTime.getMinutes()
+        + ':' + endTime.getSeconds());
+
+}
+
+
