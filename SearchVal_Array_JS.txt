@@ -1,0 +1,49 @@
+var t_arr = [{ id: 88, val: '张三' }, { id: 55, val: '李娜' }, { id: 6, val: '刘翔' }, { id: 9, val: '老赵' }];
+
+function Search_Array(arr, keys, judgeRuleCall, getValueCall) {
+    var first, last,
+        val = '';
+
+    for (first = 0, last = arr.length - 1;
+        first <= last;
+        first++, last--) {
+
+        if (judgeRuleCall(arr[first], keys)) {
+            
+            val = getValueCall(arr[first]);
+            break;
+        }
+
+        if (judgeRuleCall(arr[last], keys)) {
+            val = getValueCall(arr[last]);
+            break;
+        }
+    }
+
+    return val
+}
+
+function judgeRule_Array(item, keys) {
+    keys = parseInt(keys);
+    var blnResult = false;
+    if (item === keys) {
+        blnResult = true;
+    }
+    return blnResult;
+}
+function getValue_Array(item) {
+    return item;
+}
+
+function judgeRule_Object(obj, keys) {
+    keys = parseInt(keys);
+    var blnResult = false;
+    if (obj.id===keys) {
+        blnResult = true;
+    }
+    return blnResult;
+}
+
+function getValue_Object(obj) {
+    return obj.val;
+}
