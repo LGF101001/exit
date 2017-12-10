@@ -1,0 +1,9 @@
+这种错误分两种情况：
+1. 没有设置连接池， 或者连接池设置太小， 可以设置 256 或者 512 ;
+data source=ip,port;initial catalog=dbName;user id=?;password=?;Max Pool Size=256;Min Pool Size=10;Pooling=true;  
+
+
+2. 大部分是远程连接， 网络有问题， 大部分时候可用， 偶尔中断， 但也有可能是本地库， 但是sqlserver服务重启了或其它原因中止（见过有人一周用计划任务定时重启一次）。
+这种非常隐蔽， 如果你按连接池来处理是走弯路的了。可以打开 Windows 的事件查看器，查看对应时间段的 Windows 日志。
+
+IN适合于外表大而内表小的情况；EXISTS适合于外表小而内表大的情况。
