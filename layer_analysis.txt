@@ -1,0 +1,1093 @@
+/*! layer-v2.3 弹层组件 License LGPL  http://layer.layui.com/ By 贤心 */
+; !
+/**
+ * 其中 c 表示继承了juery的对象
+ *      e 表示初始化完成后的对象
+ *      h 表示此版本的实例化对象
+ */
+    function(a, b) {
+        "use strict";
+        var c, d, e = {
+                //获取加载文件地址上级路径
+                getPath: function() {
+                    var a = document.scripts,
+                        b = a[a.length - 1],
+                        c = b.src;
+                    if (!b.getAttribute("merge")) return c.substring(0, c.lastIndexOf("/") + 1)
+                } (),
+                //判断键盘输入数字拒绝enter键
+                enter: function(a) {
+=== a.keyCode && a.preventDefault()
+                },
+                //全局参数
+                config: {},
+                end: {},
+                btn: ["&#x786E;&#x5B9A;", "&#x53D6;&#x6D88;"],
+                type: ["dialog", "page", "iframe", "loading", "tips"]
+            },
+        //f作为内部实例化对象
+            f = {
+                v: "2.3",
+                //ie版本
+                ie6: !!a.ActiveXObject && !a.XMLHttpRequest,
+                index: 0,
+                //文件路径：绝对路径
+                path: e.getPath,
+                //自定义全局参数
+                //a是全局对象 b是回调函数
+                config: function(a, b) {
+                    var d = 0;
+                    return a = a || {},
+                        //将 参数对象放入 e中和f的缓存中避免污染全局
+                        f.cache = e.config = c.extend(e.config, a),
+                        //f.path:修改为传入参数路径，如果没有就是默认加载文件路径
+                        f.path = e.config.path || f.path,
+                        //是用来扩展的css样式。。查看是否存在，并是否为多个。并将其转换成数组形式。
+                    "string" == typeof a.extend && (a.extend = [a.extend]),
+                        //执行替换默认css
+                        f.use("skin/layer.css",
+                            //指定样式，没有的话就传入第二个参数
+                            a.extend && a.extend.length > 0 ?
+
+                                //先加载 指定样式避免默认样式被覆盖掉？这样写是有问题的，
+                                function g() {
+                                    var c = a.extend;
+                                    f.use(
+                                        //按顺序加载指定js或css
+                                        c[c[d] ? d: d - 1]
+                                        ,
+                                        //判断指定样式是否全部加载
+                                        d < c.length ?
+                                            function() {
+                                                return++d,
+                                                    //此函数自身 用于回调。
+                                                    g
+                                            } () : b)
+                                } () :
+                                b),
+                        //最终返回这个对象。
+                        this
+                },
+                //将引入js或css加入页面中
+                use: function(a, b, d) {
+                    //c是juery
+                    var e = c("head")[0],
+                    //去掉所有的空格
+                        a = a.replace(/\s/g, ""),
+                    //是否是css文件
+                        g = /\.css$/.test(a),
+                    //判断是js还是css
+                        h = document.createElement(g ? "link": "script"),
+                    //定义这个元素id
+                        i = "layui_layer_" + a.replace(/\.|\//g, "");
+                    //f.path:默认路径和指定路径
+                    return f.path ?
+                        //f.path存在返回this
+                        (   //将h.rel设置为stylesheet
+                            g && (h.rel = "stylesheet"),
+                                //f.path 为文件传过来的路径或者默认文件路径（判断a 路径是否是相对或绝对路径）
+                                h[g ? "href": "src"] = /^http:\/\//.test(a) ? a: f.path + a,
+                                //设置这个元素id，e表示<head>元素
+                                h.id = i,
+                                //页面是否存在这个标签：并将这个标签放在<head>中
+                            c("#" + i)[0] || e.appendChild(h),
+
+                                function j() {
+                                    //判断新生成的这个元素是否是最后一个元素，也就是默认的样式或js
+                                    //这个应该是个bug
+                                    (g ?
+                                    1989=== parseInt(c("#" + i).css("width"))
+                                    : f[d || i])
+                                    ?
+                                        function() {
+                                            b && b();
+                                            try {
+                                                g || e.removeChild(h)
+                                            } catch(a) {}
+                                        } () :
+                                        setTimeout(j, 100)
+                                } (),
+                                this)
+                        //不存在返回0
+                        : void 0
+                },
+                //预先加载事件a表示加载文件的根路径  b表示一个回调函数
+                ready: function(a, b) {
+                    //判断第一个参数是不是函数
+                    var d = "function" == typeof a;
+                    return
+                    //如果第一个是函数，那么传入参数格式错了就不用执行第二个参数了
+                    d && (b = a),
+                        //将信息复制过去：这个主要是为了修改路径
+                        f.config(c.extend(e.config,
+                            function() {
+                                //第一个参数不是函数格式的话就跳过，是函数就执行，a表示的是根路径
+                                return d ? {}: {
+                                    path: a
+                                }
+                            } ()), b),
+                        this
+                },
+                //第一个表示输出内容，第二个表示配置参数（加入一些指定样式），第三个表示回调函数。
+                alert: function(a, b, d) {
+                    //第三个是函数；第一个是必填的，
+                    var e = "function" == typeof b;
+                    return
+                    //明确传入的参数。
+                    e && (d = b),
+                        //调用open方法；这个在后面看
+                        f.open(c.extend({
+                                content: a,
+                                yes: d
+                            },
+                            //如果有指定格式的话，将此格式作为第二个参数加入open方法中
+                            e ? {}: b))
+                },
+                //与上面相同
+                //第一个参数 内容，必输
+                //第二个参数 指定格式  非必输
+                //第三个参数 回调函数 必输
+                //第四个参数 设置按钮的 非必输
+                confirm: function(a, b, d, g) {
+                    var h = "function" == typeof b;
+                    return
+                    //根据第二个来判断输入参数格式
+                    h && (g = d, d = b),
+                        f.open(c.extend({
+                                content: a,
+                                btn: e.btn,
+                                yes: d,
+                                btn2: g
+                            },
+                            h ? {}: b))
+                },
+                //第一个参数：内容 必输
+                //第二个参数：指定样式 非必输
+                //第三个参数：回调函数；关闭后执行操作
+                msg: function(a, d, g) {
+                    var i = "function" == typeof d,
+                    //默认图标样式或在初始化中指定的样式
+                        j = e.config.skin,
+                    //判断指定的样式是否存在，不存在就选择默认的样式，存在的话就加载两个样式 一个j 一个后面-msg的，
+                    //用来避免输入了layui-layer的简化class名
+                        k = (j ? j + " " + j + "-msg": "") || "layui-layer-msg",
+                    //动画类型的样式名称
+                        l = h.anim.length - 1;
+                    return i && (g = d),
+                        f.open(c.extend({
+                                //内容
+                                content: a,
+                                //执行时间自动关闭时间  3e3 表示很长时间
+                                time: 3e3,
+                                //遮罩效果
+                                shade: !1,
+                                //自定义样式 class名称
+                                skin: k,
+                                //名字
+                                title: !1,
+                                //是否有关闭框
+                                closeBtn: !1,
+                                //是否有按钮
+                                btn: !1,//!1为1取反 为fasle 0
+                                //关闭后执行操作
+                                end: g
+                            },
+                            //三个参数时
+                            i &&
+                                //当不传入第二个参数时
+                            !e.config.skin ? {
+                                skin: k + " layui-layer-hui",
+                                shift: l
+                            }:
+                                //当没有默认样式时
+                                function() {
+                                    //好像是想创建一个保存class的空的对象，但是明显写的有些矛盾。
+                                    return d = d || {},
+                                        //很奇怪 写法好像错了：!e.config.skin为true时就不会执行这个了
+                                    ( - 1 === d.icon || d.icon === b && !e.config.skin) && (d.skin = k + " " + (d.skin || "layui-layer-hui")),
+                                        //指定样式
+                                        d
+                                } ()))
+                },
+
+                //菊花加载的效果，第一个参数表示选择的菊花样式
+                //第二个参数是一个封装样式的对象
+                load: function(a, b) {
+                    return f.open(c.extend({
+                            type: 3,
+                            icon: a || 0,
+                            shade: .01
+                        },
+                        b))
+                },
+                //a表示内容
+                //b表示选择器  “#id”
+                //d表示指定样式 {} 非必输
+                tips: function(a, b, d) {
+                    return f.open(c.extend({
+                            type: 4,
+                            content: [a, b],
+                            closeBtn: !1,
+                            time: 3e3,
+                            shade: !1,
+                            maxWidth: 210
+                        },
+                        d))
+                }
+            },
+        //难道g才是这个layer的对外对象？表明一个实例化对象？
+            g = function(a) {
+                var b = this;
+                //index 表示这个新建元素的标示
+                b.index = ++f.index,
+                    b.config = c.extend({},
+                        b.config, e.config, a),
+                    b.creat()
+            };
+        //设置prototype的别名和使用到的变量名称；使用内部变量这样不能从外部修改。
+        g.pt = g.prototype;
+        var h = ["layui-layer", ".layui-layer-title", ".layui-layer-main", ".layui-layer-dialog", "layui-layer-iframe", "layui-layer-content", "layui-layer-btn", "layui-layer-close"];
+        h.anim = ["layer-anim", "layer-anim-01", "layer-anim-02", "layer-anim-03", "layer-anim-04", "layer-anim-05", "layer-anim-06"],
+            //设置默认属性
+            g.pt.config = {
+                type: 0,
+                //透明度和颜色
+                shade: .3,
+                fix: !0,
+                move: h[1],
+                title: "&#x4FE1;&#x606F;",
+                offset: "auto",
+                area: "auto",
+                closeBtn: 1,
+                time: 0,
+                zIndex: 19891014,
+                maxWidth: 360,
+                //表示支持的动画效果
+                shift: 0,
+                icon: -1,
+                scrollbar: !0,
+                tips: 2
+            },
+            //a表示内容的类型 对象还是字符串
+            g.pt.vessel = function(a, b) {
+                var c = this,
+                    //d作为
+                    d = c.index,
+                    //作为配置参数
+                    f = c.config,
+                    //g标示显示层等级
+                    g = f.zIndex + d,
+                    //标题是否是个对象对象中第二个参数是css样式
+                    i = "object" == typeof f.title,
+                //表示最大最小化只有在 type = 1,2时才有用
+                    j = f.maxmin && (1 === f.type || 2 === f.type),
+                    //判断标题存在不存在
+                    k = f.title ? '<div class="layui-layer-title" style="' + (i ? f.title[1] : "") + '">' + (i ? f.title[0] : f.title) + "</div>": "";
+
+                return
+                //更改其中的层级
+                f.zIndex = g,
+                    //定义背景层 没有就不写
+                    b([f.shade ? '<div class="layui-layer-shade" id="layui-layer-shade' + d + '" times="' + d + '" style="' + ("z-index:" + (g - 1) + "; background-color:" + (f.shade[1] || "#000") + "; opacity:" + (f.shade[0] || f.shade) + "; filter:alpha(opacity=" + (100 * f.shade[0] || 100 * f.shade) + ");") + '"></div>': "",
+                       //定义动画效果 anim表示支持的类型设置内容类型？动画 - 弹框 - 透明度 -边框 - 新增样式 ； id = layui-layer+index;
+                        '<div class="' + h[0] + " " + (h.anim[f.shift] || "") + (" layui-layer-" + e.type[f.type]) + (0 != f.type && 2 != f.type || f.shade ? "": " layui-layer-border") + " " + (f.skin || "") + '' +
+
+                        '" id="' + h[0] + d + '" type="' + e.type[f.type] + '" times="' + d + '" showtime="' + f.time + '" conType="' + (a ? "object": "string") + '' +
+                            //样式： area: 长 高； fix:定位；
+                        '" style="z-index: ' + g + "; width:" + f.area[0] + ";height:" + f.area[1] + (f.fix ? "": ";position:absolute;") + '">'
+                            //加入标题，根据第一个参数和弹框类型来看是否需要 标题
+                        + (a && 2 != f.type ? "": k)
+                            //根据id 表示是第几个内容 估计可以删减 只有3 的区分？加载时采取一个样式 有菊花加载？
+                        + '<div id="' + (f.id || "") + '" class="layui-layer-content' + (0 == f.type && -1 !== f.icon ? " layui-layer-padding": "") + (3 == f.type ? " layui-layer-loading" + f.icon: "") + '">'
+                           //好像是图标+内容
+                        + (0 == f.type && -1 !== f.icon ? '<i class="layui-layer-ico layui-layer-ico' + f.icon + '"></i>': "") +
+                        // 下面方法中调用这个时已经进行处理 当2,4时f.content本身就是可填入内容，当1时content是对象就填入空值，这个在外侧处理了。
+                        (1 == f.type && a ? "": f.content || "") + '</div>' +
+                          //制作上面关闭显示按钮
+                        '<span class="layui-layer-setwin">' +
+                    function() {
+                        var a = j ? '<a class="layui-layer-min" href="javascript:;"><cite></cite></a><a class="layui-layer-ico layui-layer-max" href="javascript:;"></a>': "";
+                        //判断按钮样式 并返回a数据
+                        return f.closeBtn && (a += '<a class="layui-layer-ico ' + h[7] + " " + h[7] + (f.title ? f.closeBtn: 4 == f.type ? "1": "2") + '" href="javascript:;"></a>'),
+                            a
+                    } () + "</span>"
+                        //表示下面的按钮 确定，取消等等
+                        + (f.btn ?
+                        function() {
+                            var a = "";
+                            //如果是String  转换成数组
+                            "string" == typeof f.btn && (f.btn = [f.btn]);
+                            for (var b = 0,
+                                     c = f.btn.length; c > b; b++) a += '<a class="' + h[6] + b + '">' + f.btn[b] + "</a>";
+                            return '<div class="' + h[6] + '">' + a + "</div>"
+                        } () : "") + "</div>"], k),
+                    c
+            },
+            //创建
+            g.pt.creat = function() {
+                var a = this,
+                    //表示配置信息
+                    b = a.config,
+                    //表示id
+                    g = a.index,
+                    //表示内容
+                    i = b.content,
+
+                    j = "object" == typeof i;
+                //判断这个元素是否存在
+                if (!c("#" + b.id)[0]) {
+                    //执行大小是否自适应，并根据type来判断
+                    //对内容和已有框进行处理  2,4 将内容取了出来，
+                    switch ("string" == typeof b.area && (b.area = "auto" === b.area ? ["", ""] : [b.area, ""]), b.type) {
+                        //dialog
+                        case 0:
+                            b.btn = "btn" in b ? b.btn: e.btn[0],
+                                f.closeAll("dialog");
+                            break;
+                        //iframe
+                        case 2:
+                            //根据内容格式 将其转换成数组 --第一个地址是加载地址，第二个参数是overflow
+                            var i = b.content = j ? b.content: [b.content || "http://layer.layui.com", "auto"];
+                            b.content = '<iframe scrolling="' + (b.content[1] || "auto") + '" allowtransparency="true" id="' + h[4] + g + '" name="' + h[4] + g +
+                                //加入链接地址
+                            '" onload="this.className=\'\';" class="layui-layer-load" frameborder="0" src="' + b.content[0] + '"></iframe>';
+                            break;
+                        //loading
+                        case 3:
+                            //没有名字
+                            b.title = !1,
+                                //没有关闭按钮
+                                b.closeBtn = !1,
+                                //判断图标是否存在 并没有什么意义吧
+                            -1 === b.icon && 0 === b.icon,
+                                //关闭所有的加载框
+                                f.closeAll("loading");
+                            break;
+                        //tips
+                        case 4:
+                            //内容变成数组
+                            j || (b.content = [b.content, "body"]),
+                                //follow是啥 第二个参数是传入的id值 tips() 第二个参数
+                                b.follow = b.content[1],
+                                //内容后面加个样式
+                                b.content = b.content[0] + '<i class="layui-layer-TipsG"></i>',
+                                //没有标题
+                                b.title = !1
+                                //没有定位,
+                                b.fix = !1,
+                                //将tips转换成数组
+                                b.tips = "object" == typeof b.tips ? b.tips: [b.tips, !0],
+                                //关闭所有的tips
+                            b.tipsMore || f.closeAll("tips")
+                    }
+                    //j表示内容是否是对象 d是数组 0--背景 1- 内容就两个参数
+                    a.vessel(j,
+                        function(d, e) {
+                            //加载在body内内容
+                            c("body").append(d[0]),
+                                //如果j是一个对象的话
+                                j ?
+                                    function() {
+                                        //如果是ifram或tips 直接按默认方式加入 只有2和4 是数组
+== b.type || 4 == b.type ?
+                                            function() {
+                                                //加入引入的地址
+                                                c("body").append(d[1])
+                                            } ()
+                                           //其他情况时
+                                           : function() {
+                                           //判断加入内容有没有对应layui-layer元素，如果没有那么就将这个元素内容套在里面，并在内容前加入e e是标题部分  不放在内容区域里
+                                            i.parents("." + h[0])[0] || (i.show().addClass("layui-layer-wrap").wrap(d[1]), c("#" + h[0] + g).find("." + h[5]).before(e))
+                                        } ()
+                                    } ()
+                                    //内容不是对象的话，直接加入
+                                    : c("body").append(d[1]),
+                                //a表示j 应该就是layer对象将这个生成的div框不包含背景
+                                a.layero = c("#" + h[0] + g),
+                                //默认值
+                            b.scrollbar || h.html.css("overflow", "hidden").attr("layer-full", g)
+                        }).auto(g),
+                        //对于ie6的处理
+== b.type && f.ie6 && a.layero.find("iframe").attr("src", i[0]),
+
+                        c(document).off("keydown", e.enter).on("keydown", e.enter),
+                        a.layero.on("keydown",
+                            function(a) {
+                                c(document).off("keydown", e.enter)
+                            }),
+== b.type ? a.tips() : a.offset(),
+                        //判断fix是否存在
+                    b.fix && d.on("resize",
+                        function() {
+                            a.offset(),
+                            (/^\d+%$/.test(b.area[0]) || /^\d+%$/.test(b.area[1])) && a.auto(g),
+== b.type && a.tips()
+                        }),
+                        //过多长时间关闭
+                    b.time <= 0 || setTimeout(function() {
+                            f.close(a.index)
+                        },
+                        b.time),
+                        //移动。。。。
+                        a.move().callback()
+                }
+            },
+            //这段主要是定义内容区域的高度。。。
+            g.pt.auto = function(a) {
+                function b(a) {
+                    //g是一个juery对象？
+                    a = g.find(a),
+                        //内容区域的高度
+                        a.height(i[1] - j - k - 2 * (0 | parseFloat(a.css("padding"))))
+                }
+                var e = this,
+                    f = e.config,
+                    //表示所指的juery页面元素对象
+                    g = c("#" + h[0] + a);
+                //总层的宽
+                "" === f.area[0] && f.maxWidth > 0 && (/MSIE 7/.test(navigator.userAgent) && f.btn && g.width(g.innerWidth()),
+                //.....
+                g.outerWidth() > f.maxWidth && g.width(f.maxWidth));
+                //宽和高指的是内边距的宽和高
+                var i = [g.innerWidth(), g.innerHeight()],
+                    //标题的高度
+                    j = g.find(h[1]).outerHeight() || 0,
+                    //按钮的高度？
+                    k = g.find("." + h[6]).outerHeight() || 0;
+                switch (f.type) {
+                    case 2:
+                        b("iframe");
+                        break;
+                    default:
+                        "" === f.area[1] ? f.fix && i[1] >= d.height() && (i[1] = d.height(), b("." + h[5])) : b("." + h[5])
+                }
+                return e
+            },
+            //设置距离上面的高度和宽度
+            g.pt.offset = function() {
+                var a = this,
+                    b = a.config,
+                    //总层元素
+                    c = a.layero,
+                    //自身完全区域
+                    e = [c.outerWidth(), c.outerHeight()],
+                    //判断offset是否自定义了值
+                    f = "object" == typeof b.offset;
+                //d应该是offsetheight等作为参考的元素吧 距离上端距离
+                a.offsetTop = (d.height() - e[1]) / 2,
+                    //距离左边距离
+                    a.offsetLeft = (d.width() - e[0]) / 2,
+                    //采取自定义的？？那前面的判断呢？？？可能是bug
+                    f ? (a.offsetTop = b.offset[0],
+                        //当这个异常时不赋值。。。。
+                        a.offsetLeft = b.offset[1] || a.offsetLeft)
+                        //当没有自定义的高和宽时；并且不等于auto时 是一个字符串 也就是指定了一个参数 作为高度；这个参数是rb的时候就默认居中；这个RB是啥？
+                        : "auto" !== b.offset && (a.offsetTop = b.offset, "rb" === b.offset && (a.offsetTop = d.height() - e[1], a.offsetLeft = d.width() - e[0])),
+                    //fix为true时执行下面的语句。。。
+                b.fix ||
+                //上面是为offsetTop和offsetleft赋值，这边是判断值的形式来计算具体的px单位的值
+                (a.offsetTop = /%$/.test(a.offsetTop) ? d.height() * parseFloat(a.offsetTop) / 100 : parseFloat(a.offsetTop), a.offsetLeft = /%$/.test(a.offsetLeft) ? d.width() * parseFloat(a.offsetLeft) / 100 : parseFloat(a.offsetLeft),
+                    //使其最终居中。。。
+                    a.offsetTop += d.scrollTop(), a.offsetLeft += d.scrollLeft()),
+                    c.css({
+                        top: a.offsetTop,
+                        left: a.offsetLeft
+                    })
+            },
+
+            g.pt.tips = function() {
+                var a = this,
+
+                    b = a.config,
+                    //总层
+                    e = a.layero,
+                    f = [e.outerWidth(), e.outerHeight()],
+                    //找到id的元素
+                    g = c(b.follow);
+                //没有就默认body
+                g[0] || (g = c("body"));
+                //id元素的位置信息
+                var i = {
+                        width: g.outerWidth(),
+                        height: g.outerHeight(),
+                        top: g.offset().top,
+                        left: g.offset().left
+                    },
+                    //内容后面的图标
+                    j = e.find(".layui-layer-TipsG"),
+                    //表示现对于参考元素的位置
+                    k = b.tips[0];
+                //如果为true 移走图标；第二个参数作为样式传入的
+                b.tips[1] || j.remove(),
+                    //给i设定方法
+                    //自适应左侧：1、可以容纳的话放在右边，不能容纳的话放在左侧 ---依i最右边线为准
+                    i.autoLeft = function() {
+
+                        i.left + f[0] - d.width() > 0 ? (i.tipLeft = i.left + i.width - f[0], j.css({
+                            right: 12,
+                            left: "auto"
+                        })) : i.tipLeft = i.left
+                    },
+                    //位置
+                    i.where = [function() {
+                        //自动指定left后
+                        i.autoLeft(),
+                            //放在i的上面
+                            i.tipTop = i.top - f[1] - 10,
+                            j.removeClass("layui-layer-TipsB").addClass("layui-layer-TipsT").css("border-right-color", b.tips[1])
+                    },
+                        function() {
+                            //放在右边
+                            i.tipLeft = i.left + i.width + 10,
+                                i.tipTop = i.top,
+                                j.removeClass("layui-layer-TipsL").addClass("layui-layer-TipsR").css("border-bottom-color", b.tips[1])
+                        },
+                        function() {
+                            i.autoLeft(),
+                                //放在下面
+                                i.tipTop = i.top + i.height + 10,
+                                j.removeClass("layui-layer-TipsT").addClass("layui-layer-TipsB").css("border-right-color", b.tips[1])
+                        },
+                        function() {
+                            //放在左边
+                            i.tipLeft = i.left - f[0] - 10,
+                                i.tipTop = i.top,
+                                j.removeClass("layui-layer-TipsR").addClass("layui-layer-TipsL").css("border-bottom-color", b.tips[1])
+                        }],
+                    //根据第一个参数决定放置位置{tipTop,tipLeft}
+                    i.where[k - 1](),
+=== k ?
+                   //放在上面的时候如果容纳不下就放在右边
+               i.top - (d.scrollTop() + f[1] + 16) < 0 && i.where[2]() :
+                   //放在右边容纳不下的话就放在下面
+=== k ? d.width() - (i.left + i.width + f[0] + 16) > 0 || i.where[3]() :
+                       //放在下面容纳不下的时候放在左边
+=== k ? i.top - d.scrollTop() + i.height + f[1] + 16 - d.height() > 0 && i.where[0]() :
+                       //左边容纳不下的时候放在上边。。。
+=== k && f[0] + 16 - i.left > 0 && i.where[1](),
+                   //标示符的颜色
+                    e.find("." + h[5]).css({
+                        "background-color": b.tips[1],
+                        "padding-right": b.closeBtn ? "30px": ""
+                    }),
+                    //表示
+                    e.css({
+                        left: i.tipLeft,
+                        top: i.tipTop
+                    })
+            },
+            g.pt.move = function() {
+                var a = this,
+                    b = a.config,
+                    e = {
+                        setY: 0,
+                        moveLayer: function() {
+                            var a = e.layero,
+                                b = parseInt(a.css("margin-left")),
+                                c = parseInt(e.move.css("left"));
+                            === b || (c -= b),
+                            "fixed" !== a.css("position") && (c -= a.parent().offset().left, e.setY = 0),
+                                a.css({
+                                    left: c,
+                                    top: parseInt(e.move.css("top")) - e.setY
+                                })
+                        }
+                    },
+                    f = a.layero.find(b.move);
+                return b.move && f.attr("move", "ok"),
+                    f.css({
+                        cursor: b.move ? "move": "auto"
+                    }),
+                    c(b.move).on("mousedown",
+                        function(a) {
+                            if (a.preventDefault(), "ok" === c(this).attr("move")) {
+                                e.ismove = !0,
+                                    e.layero = c(this).parents("." + h[0]);
+                                var f = e.layero.offset().left,
+                                    g = e.layero.offset().top,
+                                    i = e.layero.outerWidth() - 6,
+                                    j = e.layero.outerHeight() - 6;
+                                c("#layui-layer-moves")[0] || c("body").append('<div id="layui-layer-moves" class="layui-layer-moves" style="left:' + f + "px; top:" + g + "px; width:" + i + "px; height:" + j + 'px; z-index:2147483584"></div>'),
+                                    e.move = c("#layui-layer-moves"),
+                                b.moveType && e.move.css({
+                                    visibility: "hidden"
+                                }),
+                                    e.moveX = a.pageX - e.move.position().left,
+                                    e.moveY = a.pageY - e.move.position().top,
+                                "fixed" !== e.layero.css("position") || (e.setY = d.scrollTop())
+                            }
+                        }),
+                    c(document).mousemove(function(a) {
+                        if (e.ismove) {
+                            var c = a.pageX - e.moveX,
+                                f = a.pageY - e.moveY;
+                            if (a.preventDefault(), !b.moveOut) {
+                                e.setY = d.scrollTop();
+                                var g = d.width() - e.move.outerWidth(),
+                                    h = e.setY;
+                            > c && (c = 0),
+                                c > g && (c = g),
+                                h > f && (f = h),
+                                f > d.height() - e.move.outerHeight() + e.setY && (f = d.height() - e.move.outerHeight() + e.setY)
+                            }
+                            e.move.css({
+                                left: c,
+                                top: f
+                            }),
+                            b.moveType && e.moveLayer(),
+                                c = f = g = h = null
+                        }
+                    }).mouseup(function() {
+                        try {
+                            e.ismove && (e.moveLayer(), e.move.remove(), b.moveEnd && b.moveEnd()),
+                                e.ismove = !1
+                        } catch(a) {
+                            e.ismove = !1
+                        }
+                    }),
+                    a
+            },
+            g.pt.callback = function() {
+                function a() {
+                    var a = g.cancel && g.cancel(b.index, d);
+                    a === !1 || f.close(b.index)
+                }
+                var b = this,
+                    d = b.layero,
+                    g = b.config;
+                b.openLayer(),
+                g.success && (2 == g.type ? d.find("iframe").on("load",
+                    function() {
+                        g.success(d, b.index)
+                    }) : g.success(d, b.index)),
+                f.ie6 && b.IE6(d),
+                    d.find("." + h[6]).children("a").on("click",
+                        function() {
+                            var a = c(this).index();
+                            if (0 === a) g.yes ? g.yes(b.index, d) : g.btn1 ? g.btn1(b.index, d) : f.close(b.index);
+                            else {
+                                var e = g["btn" + (a + 1)] && g["btn" + (a + 1)](b.index, d);
+                                e === !1 || f.close(b.index)
+                            }
+                        }),
+                    d.find("." + h[7]).on("click", a),
+                g.shadeClose && c("#layui-layer-shade" + b.index).on("click",
+                    function() {
+                        f.close(b.index)
+                    }),
+                    d.find(".layui-layer-min").on("click",
+                        function() {
+                            f.min(b.index, g),
+                            g.min && g.min(d)
+                        }),
+                    d.find(".layui-layer-max").on("click",
+                        function() {
+                            c(this).hasClass("layui-layer-maxmin") ? (f.restore(b.index), g.restore && g.restore(d)) : (f.full(b.index, g), g.full && g.full(d))
+                        }),
+                g.end && (e.end[b.index] = g.end)
+            },
+            e.reselect = function() {
+                c.each(c("select"),
+                    function(a, b) {
+                        var d = c(this);
+                        d.parents("." + h[0])[0] || 1 == d.attr("layer") && c("." + h[0]).length < 1 && d.removeAttr("layer").show(),
+                            d = null
+                    })
+            },
+            g.pt.IE6 = function(a) {
+                function b() {
+                    a.css({
+                        top: f + (e.config.fix ? d.scrollTop() : 0)
+                    })
+                }
+                var e = this,
+                    f = a.offset().top;
+                b(),
+                    d.scroll(b),
+                    c("select").each(function(a, b) {
+                        var d = c(this);
+                        d.parents("." + h[0])[0] || "none" === d.css("display") || d.attr({
+                            layer: "1"
+                        }).hide(),
+                            d = null
+                    })
+            },
+            g.pt.openLayer = function() {
+                var a = this;
+                f.zIndex = a.config.zIndex,
+                    f.setTop = function(a) {
+                        var b = function() {
+                            f.zIndex++,
+                                a.css("z-index", f.zIndex + 1)
+                        };
+                        return f.zIndex = parseInt(a[0].style.zIndex),
+                            a.on("mousedown", b),
+                            f.zIndex
+                    }
+            },
+            e.record = function(a) {
+                var b = [a.outerWidth(), a.outerHeight(), a.position().top, a.position().left + parseFloat(a.css("margin-left"))];
+                a.find(".layui-layer-max").addClass("layui-layer-maxmin"),
+                    a.attr({
+                        area: b
+                    })
+            },
+            e.rescollbar = function(a) {
+                h.html.attr("layer-full") == a && (h.html[0].style.removeProperty ? h.html[0].style.removeProperty("overflow") : h.html[0].style.removeAttribute("overflow"), h.html.removeAttr("layer-full"))
+            },
+            a.layer = f,
+            f.getChildFrame = function(a, b) {
+                return b = b || c("." + h[4]).attr("times"),
+                    c("#" + h[0] + b).find("iframe").contents().find(a)
+            },
+            f.getFrameIndex = function(a) {
+                return c("#" + a).parents("." + h[4]).attr("times")
+            },
+            f.iframeAuto = function(a) {
+                if (a) {
+                    var b = f.getChildFrame("html", a).outerHeight(),
+                        d = c("#" + h[0] + a),
+                        e = d.find(h[1]).outerHeight() || 0,
+                        g = d.find("." + h[6]).outerHeight() || 0;
+                    d.css({
+                        height: b + e + g
+                    }),
+                        d.find("iframe").css({
+                            height: b
+                        })
+                }
+            },
+            f.iframeSrc = function(a, b) {
+                c("#" + h[0] + a).find("iframe").attr("src", b)
+            },
+            f.style = function(a, b) {
+                var d = c("#" + h[0] + a),
+                    f = d.attr("type"),
+                    g = d.find(h[1]).outerHeight() || 0,
+                    i = d.find("." + h[6]).outerHeight() || 0; (f === e.type[1] || f === e.type[2]) && (d.css(b), f === e.type[2] && d.find("iframe").css({
+                    height: parseFloat(b.height) - g - i
+                }))
+            },
+            f.min = function(a, b) {
+                var d = c("#" + h[0] + a),
+                    g = d.find(h[1]).outerHeight() || 0;
+                e.record(d),
+                    f.style(a, {
+                        width: 180,
+                        height: g,
+                        overflow: "hidden"
+                    }),
+                    d.find(".layui-layer-min").hide(),
+                "page" === d.attr("type") && d.find(h[4]).hide(),
+                    e.rescollbar(a)
+            },
+            f.restore = function(a) {
+                var b = c("#" + h[0] + a),
+                    d = b.attr("area").split(",");
+                b.attr("type");
+                f.style(a, {
+                    width: parseFloat(d[0]),
+                    height: parseFloat(d[1]),
+                    top: parseFloat(d[2]),
+                    left: parseFloat(d[3]),
+                    overflow: "visible"
+                }),
+                    b.find(".layui-layer-max").removeClass("layui-layer-maxmin"),
+                    b.find(".layui-layer-min").show(),
+                "page" === b.attr("type") && b.find(h[4]).show(),
+                    e.rescollbar(a)
+            },
+            f.full = function(a) {
+                var b, g = c("#" + h[0] + a);
+                e.record(g),
+                h.html.attr("layer-full") || h.html.css("overflow", "hidden").attr("layer-full", a),
+                    clearTimeout(b),
+                    b = setTimeout(function() {
+                            var b = "fixed" === g.css("position");
+                            f.style(a, {
+                                top: b ? 0 : d.scrollTop(),
+                                left: b ? 0 : d.scrollLeft(),
+                                width: d.width(),
+                                height: d.height()
+                            }),
+                                g.find(".layui-layer-min").hide()
+                        },
+                        100)
+            },
+            //b作为选择的id a作为传入的内容
+            f.title = function(a, b) {
+                var d = c("#" + h[0] + (b || f.index)).find(h[1]);
+                d.html(a)
+            },
+            //关闭事件：
+            f.close = function(a) {
+                //找到出符合id的总框
+                var b = c("#" + h[0] + a),
+                    //判断框的类型
+                    d = b.attr("type");
+                //表示第一个
+                if (b[0]) {
+                    //是page框时 判断内容类型
+                    if (d === e.type[1] && "object" === b.attr("conType")) {
+                        //表示移除除了内容的其他框
+                        b.children(":not(." + h[5] + ")").remove();
+                        //删除套的样式
+                        for (var g = 0; 2 > g; g++) b.find(".layui-layer-wrap").unwrap().hide()
+                    } else {
+                        //如果是iframe层的时候
+                        if (d === e.type[2]) try {
+                            var i = c("#" + h[4] + a)[0];
+                            //关闭iframe
+                            i.contentWindow.document.write(""),
+                                i.contentWindow.close(),
+                                //移除内容下面的编号为。。。
+                                b.find("." + h[5])[0].removeChild(i)
+                        } catch(j) {}
+                        //将b情空并移除，，感觉与上面的重复，
+                        b[0].innerHTML = "",
+                            b.remove()
+                    }
+                    //清掉这些元素
+                    c("#layui-layer-moves, #layui-layer-shade" + a).remove(),
+                    f.ie6 && e.reselect(),
+                        e.rescollbar(a),
+                        c(document).off("keydown", e.enter),
+                    "function" == typeof e.end[a] && e.end[a](),
+                        delete e.end[a]
+                }
+            },
+            //选择每一个创建的弹窗
+            f.closeAll = function(a) {
+                c.each(c("." + h[0]),
+                    function() {
+                        var b = c(this),
+                            //判断传入参数是否为弹出框类型
+                            d = a ? b.attr("type") === a: 1;
+                        //如果是的话就关闭
+                        d && f.close(b.attr("times")),
+                            d = null
+                    })
+            };
+        var i = f.cache || {},
+            j = function(a) {
+                return i.skin ? " " + i.skin + " " + i.skin + "-" + a: ""
+            };
+        f.prompt = function(a, b) {
+            a = a || {},
+            "function" == typeof a && (b = a);
+            var d, e = 2 == a.formType ? '<textarea class="layui-layer-input">' + (a.value || "") + "</textarea>": function() {
+                return '<input type="' + (1 == a.formType ? "password": "text") + '" class="layui-layer-input" value="' + (a.value || "") + '">'
+            } ();
+            return f.open(c.extend({
+                    btn: ["&#x786E;&#x5B9A;", "&#x53D6;&#x6D88;"],
+                    content: e,
+                    skin: "layui-layer-prompt" + j("prompt"),
+                    success: function(a) {
+                        d = a.find(".layui-layer-input"),
+                            d.focus()
+                    },
+                    yes: function(c) {
+                        var e = d.val();
+                        "" === e ? d.focus() : e.length > (a.maxlength || 500) ? f.tips("&#x6700;&#x591A;&#x8F93;&#x5165;" + (a.maxlength || 500) + "&#x4E2A;&#x5B57;&#x6570;", d, {
+                            tips: 1
+                        }) : b && b(e, c, d)
+                    }
+                },
+                a))
+        },
+            f.tab = function(a) {
+                a = a || {};
+                var b = a.tab || {};
+                return f.open(c.extend({
+                        type: 1,
+                        skin: "layui-layer-tab" + j("tab"),
+                        title: function() {
+                            var a = b.length,
+                                c = 1,
+                                d = "";
+                            if (a > 0) for (d = '<span class="layui-layer-tabnow">' + b[0].title + "</span>"; a > c; c++) d += "<span>" + b[c].title + "</span>";
+                            return d
+                        } (),
+                        content: '<ul class="layui-layer-tabmain">' +
+                        function() {
+                            var a = b.length,
+                                c = 1,
+                                d = "";
+                            if (a > 0) for (d = '<li class="layui-layer-tabli xubox_tab_layer">' + (b[0].content || "no content") + "</li>"; a > c; c++) d += '<li class="layui-layer-tabli">' + (b[c].content || "no  content") + "</li>";
+                            return d
+                        } () + "</ul>",
+                        success: function(b) {
+                            var d = b.find(".layui-layer-title").children(),
+                                e = b.find(".layui-layer-tabmain").children();
+                            d.on("mousedown",
+                                function(b) {
+                                    b.stopPropagation ? b.stopPropagation() : b.cancelBubble = !0;
+                                    var d = c(this),
+                                        f = d.index();
+                                    d.addClass("layui-layer-tabnow").siblings().removeClass("layui-layer-tabnow"),
+                                        e.eq(f).show().siblings().hide(),
+                                    "function" == typeof a.change && a.change(f)
+                                })
+                        }
+                    },
+                    a))
+            },
+            f.photos = function(b, d, e) {
+                function g(a, b, c) {
+                    var d = new Image;
+                    return d.src = a,
+                        d.complete ? b(d) : (d.onload = function() {
+                            d.onload = null,
+                                b(d)
+                        },
+                            void(d.onerror = function(a) {
+                                d.onerror = null,
+                                    c(a)
+                            }))
+                }
+                var h = {};
+                if (b = b || {},
+                        b.photos) {
+                    var i = b.photos.constructor === Object,
+                        k = i ? b.photos: {},
+                        l = k.data || [],
+                        m = k.start || 0;
+                    if (h.imgIndex = (0 | m) + 1, b.img = b.img || "img", i) {
+                        if (0 === l.length) return f.msg("&#x6CA1;&#x6709;&#x56FE;&#x7247;")
+                    } else {
+                        var n = c(b.photos),
+                            o = function() {
+                                l = [],
+                                    n.find(b.img).each(function(a) {
+                                        var b = c(this);
+                                        b.attr("layer-index", a),
+                                            l.push({
+                                                alt: b.attr("alt"),
+                                                pid: b.attr("layer-pid"),
+                                                src: b.attr("layer-src") || b.attr("src"),
+                                                thumb: b.attr("src")
+                                            })
+                                    })
+                            };
+                        if (o(), 0 === l.length) return;
+                        if (d || n.on("click", b.img,
+                                function() {
+                                    var a = c(this),
+                                        d = a.attr("layer-index");
+                                    f.photos(c.extend(b, {
+                                        photos: {
+                                            start: d,
+                                            data: l,
+                                            tab: b.tab
+                                        },
+                                        full: b.full
+                                    }), !0),
+                                        o()
+                                }), !d) return
+                    }
+                    h.imgprev = function(a) {
+                        h.imgIndex--,
+                        h.imgIndex < 1 && (h.imgIndex = l.length),
+                            h.tabimg(a)
+                    },
+                        h.imgnext = function(a, b) {
+                            h.imgIndex++,
+                            h.imgIndex > l.length && (h.imgIndex = 1, b) || h.tabimg(a)
+                        },
+                        h.keyup = function(a) {
+                            if (!h.end) {
+                                var b = a.keyCode;
+                                a.preventDefault(),
+                            === b ? h.imgprev(!0) : 39 === b ? h.imgnext(!0) : 27 === b && f.close(h.index)
+                            }
+                        },
+                        h.tabimg = function(a) {
+                            l.length <= 1 || (k.start = h.imgIndex - 1, f.close(h.index), f.photos(b, !0, a))
+                        },
+                        h.event = function() {
+                            h.bigimg.hover(function() {
+                                    h.imgsee.show()
+                                },
+                                function() {
+                                    h.imgsee.hide()
+                                }),
+                                h.bigimg.find(".layui-layer-imgprev").on("click",
+                                    function(a) {
+                                        a.preventDefault(),
+                                            h.imgprev()
+                                    }),
+                                h.bigimg.find(".layui-layer-imgnext").on("click",
+                                    function(a) {
+                                        a.preventDefault(),
+                                            h.imgnext()
+                                    }),
+                                c(document).on("keyup", h.keyup)
+                        },
+                        h.loadi = f.load(1, {
+                            shade: "shade" in b ? !1 : .9,
+                            scrollbar: !1
+                        }),
+                        g(l[m].src,
+                            function(d) {
+                                f.close(h.loadi),
+                                    h.index = f.open(c.extend({
+                                            type: 1,
+                                            area: function() {
+                                                var e = [d.width, d.height],
+                                                    f = [c(a).width() - 50, c(a).height() - 50];
+                                                return ! b.full && e[0] > f[0] && (e[0] = f[0], e[1] = e[0] * d.height / d.width),
+                                                    [e[0] + "px", e[1] + "px"]
+                                            } (),
+                                            title: !1,
+                                            shade: .9,
+                                            shadeClose: !0,
+                                            closeBtn: !1,
+                                            move: ".layui-layer-phimg img",
+                                            moveType: 1,
+                                            scrollbar: !1,
+                                            moveOut: !0,
+                                            shift: 5 * Math.random() | 0,
+                                            skin: "layui-layer-photos" + j("photos"),
+                                            content: '<div class="layui-layer-phimg"><img src="' + l[m].src + '" alt="' + (l[m].alt || "") + '" layer-pid="' + l[m].pid + '"><div class="layui-layer-imgsee">' + (l.length > 1 ? '<span class="layui-layer-imguide"><a href="javascript:;" class="layui-layer-iconext layui-layer-imgprev"></a><a href="javascript:;" class="layui-layer-iconext layui-layer-imgnext"></a></span>': "") + '<div class="layui-layer-imgbar" style="display:' + (e ? "block": "") + '"><span class="layui-layer-imgtit"><a href="javascript:;">' + (l[m].alt || "") + "</a><em>" + h.imgIndex + "/" + l.length + "</em></span></div></div></div>",
+                                            success: function(a, c) {
+                                                h.bigimg = a.find(".layui-layer-phimg"),
+                                                    h.imgsee = a.find(".layui-layer-imguide,.layui-layer-imgbar"),
+                                                    h.event(a),
+                                                b.tab && b.tab(l[m], a)
+                                            },
+                                            end: function() {
+                                                h.end = !0,
+                                                    c(document).off("keyup", h.keyup)
+                                            }
+                                        },
+                                        b))
+                            },
+                            function() {
+                                f.close(h.loadi),
+                                    f.msg("&#x5F53;&#x524D;&#x56FE;&#x7247;&#x5730;&#x5740;&#x5F02;&#x5E38;<br>&#x662F;&#x5426;&#x7EE7;&#x7EED;&#x67E5;&#x770B;&#x4E0B;&#x4E00;&#x5F20;&#xFF1F;", {
+                                        time: 3e4,
+                                        btn: ["&#x4E0B;&#x4E00;&#x5F20;", "&#x4E0D;&#x770B;&#x4E86;"],
+                                        yes: function() {
+                                            l.length > 1 && h.imgnext(!0, !0)
+                                        }
+                                    })
+                            })
+                }
+            },
+            e.run = function() {
+                c = jQuery,
+                    d = c(a),
+                    h.html = c("html"),
+                    f.open = function(a) {
+                        var b = new g(a);
+                        return b.index
+                    }
+            },
+            "function" == typeof define ? define(function() {
+                return e.run(),
+                    f
+            }) : function() {
+                e.run(),
+                    f.use("skin/layer.css")
+            } ()
+    } (window);

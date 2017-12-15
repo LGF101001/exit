@@ -1,0 +1,80 @@
+/*
+*Base64 编码
+*/
+!(function (window,undefined) {
+    if (!window.btoa) {
+        var a = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        window.btoa = function (c) {
+            var d = "";
+            var m, k, h = "";
+            var l, j, g, f = "";
+            var e = 0;
+            do {
+                m = c.charCodeAt(e++);
+                k = c.charCodeAt(e++);
+                h = c.charCodeAt(e++);
+                l = m >> 2;
+                j = ((m & 3) << 4) | (k >> 4);
+                g = ((k & 15) << 2) | (h >> 6);
+                f = h & 63;
+                if (isNaN(k)) {
+                    g = f = 64
+                } else {
+                    if (isNaN(h)) {
+                        f = 64
+                    }
+                }
+                d = d + a.charAt(l) + a.charAt(j) + a.charAt(g) + a.charAt(f);
+                m = k = h = "";
+                l = j = g = f = ""
+            } while (e < c.length);
+            return d
+        };
+        window.atob = function (c) {
+            var d = "";
+            var m, k, h = "";
+            var l, j, g, f = "";
+            var e = 0;
+            do {
+                l = a.indexOf(c.charAt(e++));
+                if (l < 0) {
+                    continue
+                }
+                j = a.indexOf(c.charAt(e++));
+                if (j < 0) {
+                    continue
+                }
+                g = a.indexOf(c.charAt(e++));
+                if (g < 0) {
+                    continue
+                }
+                f = a.indexOf(c.charAt(e++));
+                if (f < 0) {
+                    continue
+                }
+                m = (l << 2) | (j >> 4);
+                k = ((j & 15) << 4) | (g >> 2);
+                h = ((g & 3) << 6) | f;
+                d += String.fromCharCode(m);
+                if (g != 64) {
+                    d += String.fromCharCode(k)
+                }
+                if (f != 64) {
+                    d += String.fromCharCode(h)
+                }
+                m = k = h = "";
+                l = j = g = f = ""
+            } while (e < c.length);
+            return d
+        }
+    }
+    var b = {
+        encode: function (c) {
+            return window.btoa(unescape(encodeURIComponent(c)))
+        },
+        decode: function (c) {
+            return decodeURIComponent(escape(window.atob(c)))
+        }
+    };
+    window.BASE64 = b
+})(window);
