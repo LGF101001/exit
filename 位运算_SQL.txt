@@ -1,0 +1,14 @@
+ --添加一项
+ update Order set CalcType=CalcType|4 where OID=10036
+  --删除一项 
+ update Order set CalcType=CalcType^4 where OID=10036 and CalcType&4=4
+ --判断是否有相同项 有则返回本身，没有则返回0 
+ update Order set CalcType=CalcType&4 where OID=10036
+  
+ update Order set CalcType=CalcType|4|8|16 where OID=10036
+ update Order set CalcType=CalcType^4^8^16 where OID=10036
+ 
+ 
+ 
+ 
+ 
