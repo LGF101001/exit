@@ -1,0 +1,49 @@
+ public class StaffDetailListEquality : IEqualityComparer<StaffDetail>
+    {
+        public bool Equals(StaffDetail x, StaffDetail y)
+        {
+            UtilityHelp.WriteLog(null
+                                 , "\n x CompanyID:" + x.CompanyID + " ,PhoneNum:" + x.PhoneNum
+                                     + "\n y CompanyID:" + y.CompanyID + " ,PhoneNum:" + y.PhoneNum
+                                , "StaffDetailListEquality"
+                );
+            return x.PhoneNum == y.PhoneNum && x.row == y.row;
+        }
+
+        public int GetHashCode(StaffDetail obj)
+        {
+            if (obj == null)
+            {
+                return 0;
+            }
+            else
+            {
+                int hashCode = obj.ToString().GetHashCode();
+                return hashCode;
+            }
+        }
+    }
+	
+	 public class StaffDetail
+    {
+        public int row { get; set; }
+        public string PhoneNum { get; set; }
+        public string CompanyID { get; set; }
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    public int Get()
+    {
+        IEnumerable<StaffDetail> a1 = new List<StaffDetail>() {
+            new StaffDetail { PhoneNum = "13888888888", CompanyID = "1-1",row=1 }
+            , new StaffDetail { PhoneNum = "13888888888", CompanyID = "1-2",row=2 }
+            , new StaffDetail { PhoneNum = "13888888833", CompanyID = "1-3" ,row=3} };
+    
+        IEnumerable<StaffDetail> a2 = new List<StaffDetail>() {
+            new StaffDetail { PhoneNum = "13888888888", CompanyID = "2-1",row=1 }
+            , new StaffDetail { PhoneNum = "13888888889", CompanyID = "2-2",row=2 }};
+    
+        var chaji = a1.Except(a2, new StaffDetailListEquality()).ToList();//²î¼¯
+        return 0;
+    }
